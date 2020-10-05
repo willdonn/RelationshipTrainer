@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width-device-width, initial-scale=1, shrink-to-fit=yes">
+
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+
+        <title>Assignment 2</title>
+
+        <style>
+
+            .container .row .col-sm {
+                padding: 10px;
+            }
+
+            img {
+                filter: contrast(100%);
+            }
+
+            #godown{
+                height: 200px;
+            }
+
+        </style>
+    </head>
+
+    <body>
+
+        <div id="navbar_top" class="navbar fixed-top navbar-light bg-white">
+            <div class="mx-auto text-center">
+                <div class="text-center" id="header">
+                    <h1 id="mode"></h1>
+                    <h2 id="info"></h2>
+                    <button type="button" class="btn btn-outline-primary" id="modeButton">Practice</button>
+                    <div class="text-center">
+                        <p id="timer"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="godown-60" id="godown"></div>
+
+        <div class="container">
+
+            <div class="row">
+                <div class="col-sm">
+                    <img src="" class="img-fluid" id="11">
+                    <div id="caption11" class="invalid-feedback"></div>
+                </div>
+                <div class="col-sm">
+                    <img src="" class="img-fluid" id="12">
+                    <div id="caption12" class="invalid-feedback"></div>
+                </div>
+                <div class="col-sm">
+                    <img src="" class="img-fluid" id="13">
+                        <div id="caption13" class="invalid-feedback"> </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm">
+                    <img src="" class="img-fluid" id="21">
+                    <div id="caption21" class="invalid-feedback"></div>
+                </div>
+                <div class="col-sm">
+                    <img src=""class="img-fluid" id="22">
+                    <div id="caption22" class="invalid-feedback"></div>
+                </div>
+                <div class="col-sm">
+                    <img src="" class="img-fluid" id="23">
+                    <div id="caption23" class="invalid-feedback"></div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm">
+                    <img src="" class="img-fluid" id="31">
+                    <div id="caption31" class="invalid-feedback"></div>
+                </div>
+                <div class="col-sm">
+                    <img src="" class="img-fluid" id="32">
+                    <div id="caption32" class="invalid-feedback"></div>
+                </div>
+                <div class="col-sm">
+                    <img src="" class="img-fluid" id="33">
+                    <div id="caption33" class="invalid-feedback"></div>
+                </div>
+            </div>
+        </div>
+        </br>
+
+        <script>
+
+            /* variables */
+            people = [
+                {relationship: "Brother Joe", src: "photos/brother.jpg", found: false},
+                {relationship: "Sister Xiaofen", src: "photos/sister.jpg", found: false},
+                {relationship: "Grandchild Lynn", src: "photos/grandchild1.jpg", found: false},
+                {relationship: "Grandchild Jasper", src: "photos/grandchild2.jpg", found: false},
+                {relationship: "Neice Johanna", src: "photos/neice1.jpg", found: false},
+                {relationship: "Neice Sierra", src: "photos/neice2.jpg", found: false},
+                {relationship: "Neice Megan", src: "photos/neice3.jpg", found: false},
+                {relationship: "Nephew Dennis", src: "photos/nephew1.jpg", found: false},
+                {relationship: "Nephew Daniel", src: "photos/nephew2.jpg", found: false}
+            ];
+
+            const states = {
+                LEARN: "learn",
+                PRACTICE: "practice"
+            };
+
+            state = states.LEARN;
+
+            /* helper functions */
+            function shuffle(array) {
+                array.sort(() => Math.random() - 0.5);
+            }
+
+            function initializeLearn(){
+                document.getElementById("timer").innerHTML = "";
+
+                pictureOrder = Array.from(Array(9).keys());
+
+                pictureDivs = document.querySelectorAll(".col-sm");
+
+                shuffle(pictureOrder);
+
+                for(j=0; j<pictureDivs.length; j++) {
+
+                    pictureDivs[j].childNodes[1].style.filter = "";
+                    people[[pictureOrder[j]]].found = false;
+                    pictureDivs[j].childNodes[1].key = people[[pictureOrder[j]]];
+                    pictureDivs[j].childNodes[1].src = people[[pictureOrder[j]]].src;
+                    pictureDivs[j].childNodes[3].innerHTML = people[[pictureOrder[j]]].relationship;
+                    pictureDivs[j].childNodes[3].classList = "alert alert-info";
+                }
+
+                document.getElementById("mode").innerHTML = "Learn";
+                document.getElementById("info").innerHTML = "Study your family members and their positions on screen."
+                document.getElementById("modeButton").onclick = handleChangeMode;
+            }
+
+            function initializePractice(){
+                indx = 0;
+
+                seconds = 0;
+                document.getElementById("timer").innerHTML = "0s ";
+                practiceTimer = setInterval(function() {
+                    seconds += 1;
+                    document.getElementById("timer").innerHTML = seconds + "s ";
+                }, 1000);
+
+                questionOrder = Array.from(Array(9).keys());
+
+                pictureDivs = document.querySelectorAll(".col-sm");
+
+                shuffle(questionOrder);
+
+                for(j=0; j<pictureDivs.length; j++) {
+                    pictureDivs[j].childNodes[1].style.filter = "contrast(0%)";
+                    pictureDivs[j].childNodes[3].innerHTML = "";
+                    pictureDivs[j].childNodes[3].classList = "";
+                    pictureDivs[j].onclick = handlePhotoClick;
+                    pictureDivs[j].onmouseenter = handleMouseEnter;
+                    pictureDivs[j].onmouseleave = handleMouseExit;
+                }
+
+                document.getElementById("mode").innerHTML = "Practice";
+                document.getElementById("info").innerHTML = "Click Your "+people[questionOrder[indx]].relationship;
+                document.getElementById("modeButton").onclick = handleChangeMode;
+            }
+
+            /* event handlers */
+            function handleMouseEnter(){
+                if (state == states.LEARN) return;
+                this.childNodes[1].style.filter = "none";
+            }
+
+            function handleMouseExit(){
+                if (state == states.LEARN) return;
+                var image = this.childNodes[1];
+                if (!this.childNodes[1].key.found){
+                    this.childNodes[3].classList = "";
+                    this.childNodes[3].innerHTML = "";
+                    image.style.filter = "contrast(0%)";
+                }
+            }
+
+            function handlePhotoClick(){
+                var image = this.childNodes[1];
+
+                if (image.key.found || state == states.LEARN) return;
+
+                if (image.key == people[questionOrder[indx]]) {
+                    this.childNodes[3].classList = "form-control is-valid"
+                    this.childNodes[3].innerHTML = image.key.relationship;
+                    image.key.found = true;
+                    indx += 1
+                    if (indx < people.length){
+                        document.getElementById("info").innerHTML = "Click Your "+people[questionOrder[indx]].relationship;
+                    } else {
+                        clearInterval(practiceTimer);
+                        document.getElementById("info").innerHTML = "Congratulations! You completed practice in only "+seconds+" seconds! Click learn to start again";
+                    }
+
+                } else {
+                    this.childNodes[3].classList = "alert alert-warning"
+                    this.childNodes[3].innerHTML = "This is: <strong>"+image.key.relationship+"</strong>";
+                }
+            }
+
+            function handleChangeMode() {
+                switch(state){
+                    case states.PRACTICE:
+                        state = states.LEARN;
+                        clearInterval(practiceTimer);
+                        document.getElementById("modeButton").innerHTML = "Practice";
+                        initializeLearn();
+                        break;
+                    case states.LEARN:
+                        state = states.PRACTICE;
+                        document.getElementById("modeButton").innerHTML = "Learn";
+                        initializePractice();
+                        break;
+                }
+            }
+
+            initializeLearn();
+
+        </script>
+    </body>
+</html>
